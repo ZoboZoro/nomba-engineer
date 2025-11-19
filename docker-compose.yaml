@@ -1,27 +1,4 @@
 services:
-
-  # script:
-  #   image: ingestion:1
-  #   # set attribute to manage credentials
-  #   depends_on:
-  #     - db
-  #   env_file:
-  #     - staging/credentials/.env
-  #   environment:
-  #     ENV: staging/credentials/
-  #     KEY_FILE: /run/secrets/api_secret
-  #     LOG_FILE: /logs/
-  #     PASS_FILE: /run/secrets/postgres_pass
-  #     SQL_FILE: /src/sql
-  #     USER_FILE: /run/secrets/postgres_user
-  #   volumes:
-  #     - ingestionlog:/logs/
-  #     - ./dockerlogs/:/logs/
-  #   secrets:
-  #     - api_secret
-  #     - postgres_user
-  #     - postgres_pass
-  
   mongo:
       image: mongo:8.2
       restart: always
@@ -31,9 +8,6 @@ services:
         MONGO_INITDB_ROOT_USERNAME_FILE: ${MONGO_INITDB_ROOT_USERNAME_FILE}
         MONGO_INITDB_ROOT_PASSWORD_FILE: ${MONGO_INITDB_ROOT_PASSWORD_FILE}
       volumes:
-        # - type: bind
-        # - source: ./mongo
-        # - target: /var/mongo/
         - ./mongo:/var/lib/mongo/data
       secrets:
       - mongo_initdb_user
@@ -45,10 +19,8 @@ services:
       ports:
         - 8081:8081
       environment:
-        ME_CONFIG_MONGODB_URL: ${ME_CONFIG_MONGODB_URL}        #$(cat $ME_CONFIG_MONGODB_URL_FILE)
+        ME_CONFIG_MONGODB_URL: ${ME_CONFIG_MONGODB_URL}
         ME_CONFIG_BASICAUTH_ENABLED: true
-        # ME_CONFIG_MONGODB_SERVER: mongo
-        # ME_CONFIG_MONGODB_PORT: 27017
         ME_CONFIG_BASICAUTH_USERNAME_FILE: ${ME_CONFIG_BASICAUTH_USERNAME_FILE}
         ME_CONFIG_BASICAUTH_PASSWORD_FILE: ${ME_CONFIG_BASICAUTH_PASSWORD_FILE}
       secrets:
