@@ -19,32 +19,6 @@ logging.basicConfig(
     level=logging.INFO
     )
 
-# def db_setup() -> None:
-#     """ Function to setup postgresql schema and table """
-#     conn = None
-#     try:
-#         logging.info("Initializing database setup...")
-#         conn = psycopg2.connect(
-#             database=DBNAME,
-#             user=USER,
-#             password=PASS,
-#             host=WH_HOST,
-#             port=WH_PORT
-#             )
-
-#         # Open a cursor to perform database operations
-#         cur = conn.cursor()
-#         # Execute query
-
-#         conn.commit()
-#     except Exception as e:
-#         logging.info(f"An error has occurred:", {e})
-#     finally:
-#         if conn:
-#             cur.close()
-#             conn.close()
-#             logging.info("Connection closed.")
-
 
 postgres_src_engine = create_engine(f"postgresql+psycopg2://{USER}:{PASS}@{HOST}:{PORT}/{DBNAME}")
 
@@ -83,54 +57,25 @@ def from_postgres_source():
     
     return src_table1, src_table2
 
+
 tables = {
     "savings_plan": from_postgres_source()[0],
     "savings_transaction": from_postgres_source()[1],
     "users": from_mongodb()
     }
 
-#  Writing to storage staging layer
-
 BUCKET = "nomba-dumpss"
 time_stamp = datetime.now().strftime("%Y-%m-%d,%H-%M-%S")
-for table, table_data in tables.items():
-    wr.s3.to_csv(
-        df=table_data,
-        path=f's3://{BUCKET}/source_data_dumps/{time_stamp}{table}.csv',
-        dataset=False,
-        )
 
-
-
-# # Writing to local postgres warehouse
-# if __name__ == "__main__":
-#     try:
-#         table1.to_sql(
-#         name="savings_plan",
-#         schema="staging",
-#         con=postgres_des_engine,
-#         index=False,
-#         if_exists="append",
-#         )
-#         logging.info(f"Written {len(table1)} records from table1 to warehouse!")
-
-#         table2.to_sql(
-#         name="savings_transaction",
-#         schema="staging",
-#         con=postgres_des_engine,
-#         index=False,
-#         if_exists="append",
-#         )
-#         logging.info(f"Written {len(table2)} records from table2 to warehouse!")
-
-#         table3.to_sql(
-#         name="users",
-#         schema="staging",
-#         con=postgres_des_engine,
-#         index=False,
-#         if_exists="append",
-#         )
-        
-#         logging.info(f"Written {len(table3)} records from {mongo_data_file} to warehouse!")
-#     except Exception as e:
-#         logging.error(e)
+#  Writing to storage staging layer
+if __name__ == "__main__":
+    try:
+        for table, table_data in tables.items():
+            wr.s3.to_csv(
+                df=table_data,
+                path=f's3://{BUCKET}/source_data_dumps/{time_stamp}{table}.csv',
+                dataset=False,
+                )
+            logging.info(f"Written {len(table_data)} records from {table} to staging layer!")
+    except Exception as e:
+        logging.error(e)
