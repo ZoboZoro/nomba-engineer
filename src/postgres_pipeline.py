@@ -5,10 +5,9 @@ from datetime import datetime, timedelta
 import pandas as pd
 from faker import Faker
 from random_timestamp import random_timestamp
-from sqlalchemy import create_engine
-
+from sqlalchemy import create_engine, schema, inspect
 from utils.config import DBNAME, HOST, PASS, PG_LOG_FILE, PORT, USER
-
+import sqlalchemy
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     filename=PG_LOG_FILE,
@@ -76,6 +75,13 @@ if __name__ == "__main__":
         engine = create_engine(
             f"postgresql+psycopg2://{USER}:{PASS}@{HOST}:{PORT}/{DBNAME}"
             )
+        if "bronze" not in inspect(engine).get_schema_names():
+            with engine.begin() as conn:
+                conn.execute(schema.CreateSchema("bronze", if_not_exists=True))
+                logging.info("Schema created...")
+        else:
+            logging.info("Schema exists! Now proceeding...")
+            logging.info(inspect(engine).get_schema_names())
 
         # Write to savings_plan table
         plans.to_sql(
