@@ -1,0 +1,1 @@
+![architectural diagram](assets/nomba-gif.gif)
