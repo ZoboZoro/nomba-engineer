@@ -7,7 +7,8 @@ from faker import Faker
 from random_timestamp import random_timestamp
 from sqlalchemy import create_engine, schema, inspect
 from utils.config import DBNAME, HOST, PASS, PG_LOG_FILE, PORT, USER
-import sqlalchemy
+
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     filename=PG_LOG_FILE,
