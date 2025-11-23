@@ -1,7 +1,8 @@
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from pathlib import Path
 
 BASE_DIR = Path(__file__).parent.parent.parent
 dotenv_path = f"{BASE_DIR}/.env"
@@ -9,8 +10,8 @@ dotenv_path = f"{BASE_DIR}/.env"
 load_dotenv(dotenv_path, verbose=True)
 
 # MongoDB config
-MONGO_USER=os.getenv('MONGO_USER')
-MONGO_PASS=os.getenv('MONGO_PASS')
+MONGO_USER = os.getenv('MONGO_USER')
+MONGO_PASS = os.getenv('MONGO_PASS')
 CONNECTION_STRING = f"mongodb://{MONGO_USER}:{MONGO_PASS}@localhost:27017/"
 client = MongoClient(CONNECTION_STRING)
 DB = client["nomba"]
