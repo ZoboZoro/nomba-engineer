@@ -7,3 +7,4 @@ mongo
 log*
 *cache*
 *cdc*
+query*
