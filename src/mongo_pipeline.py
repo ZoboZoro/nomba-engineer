@@ -16,7 +16,7 @@ fake = Faker()
 
 full_document = []
 
-for _ in range(1000):
+for _ in range(500):
     user = {
       "Uid": fake.uuid4(),
       "firstName": fake.first_name(),
