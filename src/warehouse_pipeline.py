@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import awswrangler as wr
 import pandas as pd
@@ -25,9 +25,13 @@ time_stamp = datetime.now().strftime("%Y-%m-%d,%H-%M-%S")
 
 
 def mongodb_tos3() -> None:
+    """Function to extract from postgresql to s3 bucket"""
+
     client = MongoClient(CONNECTION_STRING)
     collection = client[DBNAME].get_collection("users")
-    users_data = pd.DataFrame(collection.find({}))
+    users_data = pd.DataFrame(collection.find({"updated_at": {
+        "$gt": datetime.now() - timedelta(hours=24)
+    }}))
     wr.s3.to_csv(
                 df=users_data,
                 path=f's3://{BUCKET}/source_data_dumps/{time_stamp}_users.csv',
@@ -49,17 +53,22 @@ def mongodb_tos3() -> None:
 #     ], capture_output=True)
 
 
-def postgresSource_tos3():
-    # connect to source
-    src_table1 = pd.read_sql_table(
-        table_name="savings_plan",
-        schema="bronze",
+def postgresSource_tos3() -> None:
+    """Function to extract from postgresql to s3 bucket"""
+
+    src_table1 = pd.read_sql(
+        sql="""
+        SELECT * FROM bronze.savings_plan
+        WHERE updated_at > now() - interval '24 hours'
+        """,
         con=postgres_src_engine,
     )
 
-    src_table2 = pd.read_sql_table(
-        table_name="savings_transaction",
-        schema="bronze",
+    src_table2 = pd.read_sql(
+        sql="""
+        SELECT * FROM bronze.savings_transaction
+        WHERE updated_at > now() - interval '24 hours'
+        """,
         con=postgres_src_engine,
     )
 
@@ -72,17 +81,18 @@ def postgresSource_tos3():
     for table, table_data in tables.items():
         wr.s3.to_csv(
                 df=table_data,
-                path=f"s3://{BUCKET}/source_data_dumps/\
-                {time_stamp}{table}.csv",
+                path=(
+                    f"s3://{BUCKET}/source_data_dumps/"
+                    f"{time_stamp}{table}.csv"
+                ),
                 dataset=False,
                 )
         logging.info(
-                 f"Written {len(table_data)} records from\
-                 {table} to staging layer!"
+                 f"Written {len(table_data)} records from"
+                 f"{table} to staging layer!"
                  )
 
 
-#  Writing to storage staging layer
 if __name__ == "__main__":
     mongodb_tos3()
     postgresSource_tos3()
