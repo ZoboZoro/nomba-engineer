@@ -12,9 +12,9 @@ from utils.config import DBNAME, HOST, PASS, PG_LOG_FILE, PORT, USER
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     filename=PG_LOG_FILE,
-    format='%(asctime)s:%(levelname)s:%(message)s',
-    level=logging.INFO
-    )
+    format="%(asctime)s:%(levelname)s:%(message)s",
+    level=logging.INFO,
+)
 
 # Initiate faker object
 fake = Faker()
@@ -41,7 +41,7 @@ def generate_plans(no_of_records):
             "created_at": random_timestamp(2025),
             "updated_at": datetime.now(),
             "deleted_at": None,
-                }
+        }
         plans_record.append(savings_plan)
     plan_df = pd.DataFrame(plans_record)
     return plan_df
@@ -62,7 +62,7 @@ def generate_transactions(plan_ids, no_of_txns):
                 "rate": round(random.uniform(0.5, 2.0), 4),
                 "txn_timestamp": random_timestamp(year=2025),
                 "updated_at": datetime.now(),
-                "deleted_at": None
+                "deleted_at": None,
             }
             transactions.append(transaction)
     txn_df = pd.DataFrame(transactions)
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     try:
         engine = create_engine(
             f"postgresql+psycopg2://{USER}:{PASS}@{HOST}:{PORT}/{DBNAME}"
-            )
+        )
         if "bronze" not in inspect(engine).get_schema_names():
             with engine.begin() as conn:
                 conn.execute(schema.CreateSchema("bronze", if_not_exists=True))
@@ -90,8 +90,8 @@ if __name__ == "__main__":
             con=engine,
             schema="bronze",
             if_exists="append",
-            index=False
-            )
+            index=False,
+        )
         logging.info(f"Written {len(plans)} records to plans table!")
 
         # Write to transactions table
@@ -100,10 +100,10 @@ if __name__ == "__main__":
             con=engine,
             schema="bronze",
             if_exists="append",
-            index=False
-            )
+            index=False,
+        )
         logging.info(
             f"Written {len(savings_txn)} records to savings_transaction table!"
-            )
+        )
     except Exception as e:
         logging.error(e)
