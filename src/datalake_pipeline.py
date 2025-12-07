@@ -39,19 +39,6 @@ def mongodb_tos3() -> None:
     logging.info(f"Written {len(users_data)} records to staging layer!")
 
 
-# mongo_data_file = f"user_collections{time_stamp}.csv"
-
-# subprocess.run([
-#     "mongoexport", \
-#     "--collection=users", \
-#     f"--db={DBNAME}", \
-#     f"--out={DATA_DIR}/{mongo_data_file}", \
-#     f"--username={MONGO_USER}", \
-#     f"--password={MONGO_PASS}", \
-#     "--authenticationDatabase=admin"
-#     ], capture_output=True)
-
-
 def postgresSource_tos3() -> None:
     """Function to extract from postgresql to s3 bucket"""
 
