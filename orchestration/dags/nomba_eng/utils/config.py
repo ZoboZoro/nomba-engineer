@@ -27,7 +27,8 @@ SQL_FILE = BASE_DIR / "sql" / "query.sql"
 LOG_DIR = BASE_DIR / "logs"
 LOG = LOG_DIR.mkdir(exist_ok=True)
 PG_LOG_FILE = LOG_DIR / "postgres_src.log"
-WH_LOG_FILE = LOG_DIR / "warehouse_pipeline.log"
+
+# WH_LOG_FILE = LOG_DIR / "warehouse_pipeline.log"
 MG_LOG_FILE = LOG_DIR / "mongo_src.log"
 DATA_DIR = BASE_DIR / "data"
 DATA = BASE_DIR.mkdir(exist_ok=True)
