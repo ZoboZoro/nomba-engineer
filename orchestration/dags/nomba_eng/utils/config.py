@@ -3,8 +3,8 @@ from pathlib import Path
 from airflow.sdk import Variable
 # from dotenv import load_dotenv
 from pymongo import MongoClient
-import variables
-from variables import DB_NAME, MONGO_HOST
+from nomba_eng.utils import variables
+from nomba_eng.utils.variables import DB_NAME, MONGO_HOST
 
 variable = variables
 BASE_DIR = Path(__file__).parent.parent.parent
@@ -28,16 +28,13 @@ LOG_DIR = BASE_DIR / "logs"
 LOG = LOG_DIR.mkdir(exist_ok=True)
 PG_LOG_FILE = LOG_DIR / "postgres_src.log"
 
-# WH_LOG_FILE = LOG_DIR / "warehouse_pipeline.log"
+DATALAKE_LOG_FILE = LOG_DIR / "datalake_pipeline.log"
 MG_LOG_FILE = LOG_DIR / "mongo_src.log"
-DATA_DIR = BASE_DIR / "data"
 DATA = BASE_DIR.mkdir(exist_ok=True)
 
 # SQL_DB config
 USER = Variable.get("PG_USER")
 PASS = Variable.get("PG_PASS")
 HOST = Variable.get("PG_HOST", "postgres_src")
-WH_HOST = Variable.get("PG_HOST", "postgres_des")
 DBNAME = Variable.get("DB_NAME")
-PORT = int(Variable.get("SRC_PG_PORT", 5432))
-WH_PORT = int(Variable.get("DES_PG_PORT", 5432))
+PG_PORT = int(Variable.get("SRC_PG_PORT", 5432))
