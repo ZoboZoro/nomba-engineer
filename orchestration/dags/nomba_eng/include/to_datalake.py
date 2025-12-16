@@ -6,8 +6,8 @@ import pandas as pd
 from pymongo import MongoClient
 from sqlalchemy import create_engine
 
-from nomba_eng.utils.config import (CONNECTION_STRING, DBNAME, HOST, PASS, PG_PORT, USER,
-                          DATALAKE_LOG_FILE)
+from nomba_eng.utils.config import (CONNECTION_STRING, DATALAKE_LOG_FILE,
+                                    DBNAME, HOST, PASS, PG_PORT, USER)
 
 logger = logging.getLogger(__name__)
 
