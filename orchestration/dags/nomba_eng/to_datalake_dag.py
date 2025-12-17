@@ -2,10 +2,12 @@ from datetime import timedelta
 
 from airflow.providers.smtp.operators.smtp import EmailOperator
 from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.sdk import DAG
 from pendulum import datetime
 
 from nomba_eng.include.to_datalake import mongodb_tos3, postgresSource_tos3
+from airflow.providers.mongo.hooks.mongo import MongoHook
 
 default_args = {
     "owner": "Nombaa",
@@ -24,20 +26,20 @@ with DAG(
         python_callable=mongodb_tos3,
     )
 
-    postgres_s3 = PythonOperator(
-        task_id="postgres_s3",
-        python_callable=postgresSource_tos3,
-    )
+    # postgres_s3 = PythonOperator(
+    #     task_id="postgres_s3",
+    #     python_callable=postgresSource_tos3,
+    # )
 
-    send_notification = EmailOperator(
-        task_id="send_notification",
-        to=["ahardysuccess@gmail.com", "taofeecohadesanu@gmail.com"],
-        subject="FETCH DATA TO NOMBA-ENG S3 LAKE",
-        html_content="""
-        <h3> Loading data to datalake notice </h3>
-        <p>This is the status of your job from airflow</p>
-        <p>Regards.</p>
-""",
-        conn_id="smtp_id",
-    )
-[mongo_s3, postgres_s3]
+#     send_notification = EmailOperator(
+#         task_id="send_notification",
+#         to=["ahardysuccess@gmail.com", "taofeecohadesanu@gmail.com"],
+#         subject="FETCH DATA TO NOMBA-ENG S3 LAKE",
+#         html_content="""
+#         <h3> Loading data to datalake notice </h3>
+#         <p>This is the status of your job from airflow</p>
+#         <p>Regards.</p>
+# """,
+#         conn_id="smtp_id",
+#     )
+mongo_s3
