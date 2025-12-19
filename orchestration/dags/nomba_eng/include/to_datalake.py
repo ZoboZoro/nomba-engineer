@@ -26,7 +26,7 @@ time_stamp = datetime.now().strftime("%Y-%m-%d,%H-%M-%S")
 
 
 def mongodb_tos3() -> None:
-    """Function to extract from postgresql to s3 bucket"""
+    """Function to extract from mongodb to s3 bucket"""
 
     client = MongoClient(CONNECTION_STRING)
     collection = client[DBNAME].get_collection("users")
@@ -65,7 +65,7 @@ def postgresSource_tos3() -> None:
 
     tables = {"savings_plan": src_table1, "savings_transaction": src_table2}
 
-    # Load to staging layer
+    # Load to data lake
     for table, table_data in tables.items():
         wr.s3.to_csv(
             df=table_data,
