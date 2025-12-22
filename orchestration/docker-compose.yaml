@@ -384,6 +384,8 @@ services:
       - postgres_user
       - postgres_pass 
 
+
+
 secrets:
   mongo_initdb_user:
     file: ./credentials/mongo_initdb_user.txt
