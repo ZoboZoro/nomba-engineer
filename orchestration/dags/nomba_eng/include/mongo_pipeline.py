@@ -3,7 +3,7 @@ from datetime import datetime
 
 from faker import Faker
 
-from utils.config import COLLECTION, DBNAME, MG_LOG_FILE
+from nomba_eng.utils.config import COLLECTION, DBNAME, MG_LOG_FILE
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -11,6 +11,8 @@ logging.basicConfig(
     format="%(asctime)s:%(levelname)s:%(message)s",
     level=logging.INFO,
 )
+
+
 def write_to_mongo():
     fake = Faker()
 
@@ -31,4 +33,6 @@ def write_to_mongo():
 
     COLLECTION.insert_many(full_document)
     logging.info(f"writen records of {len(full_document)} to database: {DBNAME}...")
-    
+
+
+write_to_mongo()
