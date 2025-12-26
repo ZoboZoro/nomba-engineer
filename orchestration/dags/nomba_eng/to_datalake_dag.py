@@ -7,6 +7,7 @@ from airflow.sdk import DAG
 from pendulum import datetime
 
 from nomba_eng.include.to_datalake import mongodb_tos3, postgresSource_tos3
+from nomba_eng.include.mongo_pipeline import write_to_mongo
 from airflow.providers.mongo.hooks.mongo import MongoHook
 
 default_args = {
@@ -21,6 +22,11 @@ with DAG(
     default_args=default_args,
     schedule=None,
 ):
+    # to_mongo = PythonOperator(
+    #     task_id="to_mongo",
+    #     python_callable=write_to_mongo
+    # )
+
     mongo_s3 = PythonOperator(
         task_id="mongo_s3",
         python_callable=mongodb_tos3,
@@ -42,4 +48,4 @@ with DAG(
 # """,
 #         conn_id="smtp_id",
 #     )
-mongo_s3
+    mongo_s3
