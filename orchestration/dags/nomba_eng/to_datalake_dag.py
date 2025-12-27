@@ -22,10 +22,10 @@ with DAG(
     default_args=default_args,
     schedule=None,
 ):
-    # to_mongo = PythonOperator(
-    #     task_id="to_mongo",
-    #     python_callable=write_to_mongo
-    # )
+    to_mongo = PythonOperator(
+        task_id="to_mongo",
+        python_callable=write_to_mongo
+    )
 
     mongo_s3 = PythonOperator(
         task_id="mongo_s3",
